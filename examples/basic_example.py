@@ -16,3 +16,11 @@ print("Новое значение нейрона:", n1.get_value())  # Ново
 
 # Выводим обновленную информацию
 n1.display_info()  # Neuron ID: 1, Value: 0.85
+
+# Создаем нейрон с подключениями
+n1 = Neuron(neuron_id=1, connections=[2, 3, 4])
+print(n1.connections)  # [2, 3, 4]
+
+# Создаем нейрон без подключений
+n2 = Neuron(neuron_id=2)
+print(n2.connections)  # []
