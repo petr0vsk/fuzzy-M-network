@@ -70,14 +70,25 @@ class MNetwork(BaseNetworkMeta):
             # Обновляем значение целевого нейрона
             target_neuron.value += signal
 
-    def get_result(self) -> Neuron:
+    def get_result(self) -> List[Neuron]:
         """
-        Возвращает нейрон, имеющий максимальный накопленный сигнал.
+        Возвращает список выходных нейронов с наибольшим накопленным сигналом.
+        Выходной нейрон — это нейрон, у которого нет исходящих связей.
         """
         if not self._neurons:
             raise ValueError("Сеть пуста, невозможно получить результат")
 
-        return max(self._neurons.values(), key=lambda neuron: neuron.value)
+        # Находим выходные нейроны (те, у кого нет исходящих связей)
+        output_neurons = [neuron for neuron in self._neurons.values() if not neuron.target_ids]
+
+        if not output_neurons:
+            raise ValueError("В сети нет выходных нейронов")
+
+        # Находим максимальное значение среди выходных нейронов
+        max_value = max(neuron.value for neuron in output_neurons)
+
+        # Возвращаем список всех выходных нейронов с этим значением
+        return [neuron for neuron in output_neurons if neuron.value == max_value]
 
     def __repr__(self):
         return f"MNetwork(neurons={list(self._neurons.keys())}, connections={len(self._connections)})"
