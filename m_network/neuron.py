@@ -1,53 +1,58 @@
-from m_network.сonnection import Connection
-class Neuron:
-    """
-    Класс для представления нейрона в М-сети.
-    """
-    def __init__(self, neuron_id: int, connections: list = None, initial_value: float = 0.0):
-        """
-        Конструктор для инициализации нейрона.
-        :param neuron_id: Уникальный идентификатор нейрона.
-        :param initial_value: Начальное значение нейрона (по умолчанию 0.0).
-        """
-        self.neuron_id = neuron_id
-        self.value = initial_value
-        self.connections = connections if connections is not None else []
+from m_network.meta import BaseNeuronMeta
+from typing import List
 
-    def display_info(self):
-        print(f"Neuron ID: {self.neuron_id}, Value: {self.value}")
-        print("Connections:")
-        for conn in self.connections:
-            print(f" -> {conn}")
+class Neuron(BaseNeuronMeta):
+    def __init__(self, neuron_id: int):
+        if not isinstance(neuron_id, int):
+            raise TypeError(f"neuron_id должен быть int, получено {type(neuron_id).__name__}")
+        if neuron_id < 0:
+            raise ValueError(f"neuron_id должен быть неотрицательным числом, получено {neuron_id}")
 
-    def set_value(self, new_value: float) -> None:
-        """
-        Устанавливает новое значение для нейрона.
-        :param new_value: Новое значение для нейрона.
-        """
-        self.value = new_value
+        self._id = neuron_id
+        self._value = 0.0
+        self._target_ids: List[int] = []
 
-    def set_connections(self, connections: list) -> None:
-        """
-        Устанавливает новое значение для нейрона.
-        :param new_value: Новое значение для нейрона.
-        """
-    def get_value(self) -> list:
-        """
-        Возвращает текущее значение нейрона.
-        :return: Значение нейрона.
-        """
-        return self.value
+    @property
+    def id(self) -> int:
+        return self._id
 
-    def get_connections(self) -> float:
-        """
-        Возвращает текущее значение нейрона.
-        :return: Значение нейрона.
-        """
-        return self.connections
+    @property
+    def value(self) -> float:
+        return self._value
 
-    def add_connection(self, target_neuron_id: int, weight: float, connection_type: str = "excitatory"):
+    @value.setter
+    def value(self, val: float):
+        if not isinstance(val, (int, float)):
+            raise TypeError(f"value должен быть числом (int или float), получено {type(val).__name__}")
+        self._value = float(val)
+
+    @property
+    def target_ids(self) -> List[int]:
+        return self._target_ids
+
+    def add_target(self, target_id: int):
+        if not isinstance(target_id, int):
+            raise TypeError(f"target_id должен быть int, получено {type(target_id).__name__}")
+        if target_id < 0:
+            raise ValueError(f"target_id должен быть неотрицательным числом, получено {target_id}")
+        if target_id in self._target_ids:
+            raise ValueError(f"Нейрон уже связан с target_id={target_id}")
+
+        self._target_ids.append(target_id)
+
+    def process_signal(self):
         """
-        Добавляет новое подключение к другому нейрону.
+        Обрабатывает входной сигнал.
+        Пока заглушка – будет управляться `MNetwork`.
         """
-        new_connection = Connection(target_neuron_id, weight, connection_type)
-        self.connections.append(new_connection)
+        pass
+
+    def activate(self):
+        """
+        Активирует нейрон.
+        Пока заглушка – будет управляться `MNetwork`.
+        """
+        pass
+
+    def __repr__(self):
+        return f"Neuron(id={self._id}, value={self._value}, targets={self._target_ids})"

@@ -1,33 +1,31 @@
-# examples/basic_example.py
-
+from m_network.mnetwork import MNetwork
 from m_network.neuron import Neuron
-from m_network.input_neuron import InputNeuron
-from m_network.output_neuron import OutputNeuron
 
-# Создаем нейрон
-n1 = Neuron(neuron_id=1)
+# Создаём сеть
+net = MNetwork()
 
-# Добавляем подключения
-n1.add_connection(target_neuron_id=2, weight=0.9)
-n1.add_connection(target_neuron_id=3, weight=-0.4, connection_type="inhibitory")
+# Создаём нейроны
+n1 = Neuron(1)
+n2 = Neuron(2)
+n3 = Neuron(3)
 
-# Выводим информацию
-n1.display_info()
+# Добавляем нейроны в сеть
+net.add_neuron(n1)
+net.add_neuron(n2)
+net.add_neuron(n3)
 
+# Создаём связи между нейронами
+net.add_connection(1, 2, weight=0.5, conn_type="excitation")
+net.add_connection(2, 3, weight=0.8, conn_type="excitation")
 
+# Передаём входной сигнал (n1 получает 10.0)
+net.propagate_signal({1: 10.0})
 
-# Создаем нейроны
-input_n = InputNeuron(neuron_id=1)
-output_n = OutputNeuron(neuron_id=2)
+# Выводим состояние сети
+print(n1)  # Neuron(id=1, value=10.0, targets=[2])
+print(n2)  # Neuron(id=2, value=5.0, targets=[3])
+print(n3)  # Neuron(id=3, value=4.0, targets=[])
 
-# Передаем входной сигнал
-input_n.receive_input(0.8)
-input_n.display_info()  # Input Neuron ID: 1, Input Signal: 0.8
-
-# Подключаем input_n к output_n
-output_n.add_connection(target_neuron_id=input_n.neuron_id, weight=1.0)
-
-# Вычисляем результат
-output_n.compute_output()
-output_n.display_info()  # Output Neuron ID: 2, Output Value: 1.0
-
+# Получаем "победителя" – нейрон с максимальным value
+winner = net.get_result()
+print(f"Нейрон с максимальным сигналом: {winner}")
