@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import List
+from typing import List, Dict
 
 class BaseNeuronMeta(metaclass=ABCMeta):
     """
@@ -31,21 +31,19 @@ class BaseNeuronMeta(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_target(self, target_id: int):
+    def add_target(self, target_id: int) -> None:
         """Добавляет ID целевого нейрона"""
         pass
 
     @abstractmethod
-    def process_signal(self):
+    def process_signal(self) -> None:
         """Обрабатывает входной сигнал (реализация зависит от типа нейрона)"""
         pass
 
     @abstractmethod
-    def activate(self):
+    def activate(self) -> None:
         """Активирует нейрон (можно переопределить для разных функций активации)"""
         pass
-
-from abc import ABCMeta, abstractmethod
 
 class BaseConnectionMeta(metaclass=ABCMeta):
     """
@@ -91,9 +89,6 @@ class BaseConnectionMeta(metaclass=ABCMeta):
         """
         pass
 
-from abc import ABCMeta, abstractmethod
-from typing import Dict, List
-
 class BaseNetworkMeta(metaclass=ABCMeta):
     """
     Абстрактный класс для М-сети.
@@ -112,17 +107,17 @@ class BaseNetworkMeta(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_neuron(self, neuron: "BaseNeuronMeta"):
+    def add_neuron(self, neuron: "BaseNeuronMeta") -> None:
         """Добавляет нейрон в сеть"""
         pass
 
     @abstractmethod
-    def add_connection(self, source_id: int, target_id: int, weight: float, conn_type: str):
+    def add_connection(self, source_id: int, target_id: int, weight: float, conn_type: str) -> None:
         """Создает и добавляет связь между нейронами"""
         pass
 
     @abstractmethod
-    def propagate_signal(self, input_signals: Dict[int, float]):
+    def propagate_signal(self, input_signals: Dict[int, float]) -> None:
         """
         Передает сигналы по сети.
         :param input_signals: Словарь {id_нейрона: входной сигнал}.

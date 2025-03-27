@@ -1,6 +1,6 @@
 from m_network.meta import BaseNetworkMeta
 from m_network.neuron import Neuron
-from m_network.сonnection  import Connection
+from m_network.сonnection import Connection
 from typing import Dict, List
 
 class MNetwork(BaseNetworkMeta):
@@ -41,6 +41,9 @@ class MNetwork(BaseNetworkMeta):
         """
         if source_id not in self._neurons or target_id not in self._neurons:
             raise ValueError("Один или оба нейрона не существуют в сети")
+
+        if conn_type not in ["excitation", "inhibition"]:
+            raise ValueError("Тип связи должен быть либо 'excitation', либо 'inhibition'")
 
         # Создаем соединение
         conn = Connection(source_id, target_id, weight, conn_type)
